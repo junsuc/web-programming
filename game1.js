@@ -30,9 +30,49 @@ var missile_x = 0; var missile_y = 0;
 var missileImg = new Image();
 missileImg.src = "./images/missilelv1.png";
 var missilelv = 1;
-var missilespeed = 80;
+var missilespeed = 70;
+
+var danger_x = 0; var danger_y = 0;
+var dangerImg = new Image();
+dangerImg.src = "./images/danger.png";
 
 var score = 0;
+
+function restart_game() {
+    characterlive = true;
+
+    mob1_x = 0; mob1_y = 0;
+    mob2_x = 0; mob2_y = 0;
+    mob3_x = 0; mob3_y = 0;
+    mob4_x = 0; mob4_y = 0;
+    mob5_x = 0; mob5_y = 0;
+    mob1Img = new Image();
+    mob1Img.src = "./images/moblv1.png";
+    mob2Img = new Image();
+    mob2Img.src = "./images/moblv1.png";
+    mob3Img = new Image();
+    mob3Img.src = "./images/moblv1.png";
+    mob4Img = new Image();
+    mob4Img.src = "./images/moblv1.png";
+    mob5Img = new Image();
+    mob5Img.src = "./images/moblv1.png";
+    mob1live = true; mob2live = true; mob3live = true; mob4live = true; mob5live = true;
+    moblv = 1;
+    mob1_lv = 1; mob2_lv = 1; mob3_lv = 1; mob4_lv = 1; mob5_lv = 1;
+    mob1_life = mob1_lv; mob2_life = mob2_lv; mob3_life = mob3_lv; mob4_life = mob4_lv; mob5_life = mob5_lv;
+    mobspeed = 8;
+
+    missile_x = 0; missile_y = 0;
+    missileImg = new Image();
+    missileImg.src = "./images/missilelv1.png";
+    missilelv = 1;
+    missilespeed = 70;
+
+    danger_x = Math.floor(Math.random() * ((myCanvas.width - 1) - (dangerImg.width + 1) + 1)) + (dangerImg.width);
+    danger_y = Math.floor(Math.random() * ((-6000) - (-5000) + 1)) + (-5000);
+    
+    score = 0;
+}
 
 function First_Frame() {
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
@@ -52,6 +92,10 @@ function First_Frame() {
     missile_x = character_x + characterImg.width / 2 - missileImg.width / 2;
     missile_y = character_y - missileImg.height;
     ctx.drawImage(missileImg, missile_x, missile_y);
+
+    danger_x = Math.floor(Math.random() * ((myCanvas.width - 1) - (dangerImg.width + 1) + 1)) + (dangerImg.width);
+    danger_y = Math.floor(Math.random() * ((-6000) - (-5000) + 1)) + (-5000);
+    ctx.drawImage(dangerImg, danger_x, danger_y);
 }
 First_Frame();
 
@@ -74,10 +118,10 @@ function Do_a_Frame() {
     ctx.drawImage(missileImg, missile_x, missile_y);
 
     if (ImagesTouching (missile_x, missile_y, missileImg, mob1_x, mob1_y, mob1Img)) {
-        mob1_life -= 1;
+        mob1_life -= missilelv;
         if (mob1_life <= 0) {
             if (mob1live == true) {
-                score += mob1_lv;
+                score += Math.floor(mob1_lv**2 + (myCanvas.height - mob1_y) / 100);
                 missileImg.src = "./images/missiledie.png";
             }
             mob1live = false;
@@ -85,10 +129,10 @@ function Do_a_Frame() {
         }
     }
     if (ImagesTouching (missile_x, missile_y, missileImg, mob2_x, mob2_y, mob2Img)) {
-        mob2_life -= 1;
+        mob2_life -= missilelv;
         if (mob2_life <= 0) {
             if (mob2live == true) {
-                score += mob2_lv;
+                score += Math.floor(mob2_lv**2 + (myCanvas.height - mob2_y) / 100);
                 missileImg.src = "./images/missiledie.png";
             }
             mob2live = false;
@@ -96,10 +140,10 @@ function Do_a_Frame() {
         }
     }
     if (ImagesTouching (missile_x, missile_y, missileImg, mob3_x, mob3_y, mob3Img)) {
-        mob3_life -= 1;
+        mob3_life -= missilelv;
         if (mob3_life <= 0) {
             if (mob3live == true) {
-                score += mob3_lv;
+                score += Math.floor(mob3_lv**2 + (myCanvas.height - mob3_y) / 100);
                 missileImg.src = "./images/missiledie.png";
             }
             mob3live = false;
@@ -107,10 +151,10 @@ function Do_a_Frame() {
         }
     }
     if (ImagesTouching (missile_x, missile_y, missileImg, mob4_x, mob4_y, mob4Img)) {
-        mob4_life -= 1;
+        mob4_life -= missilelv;
         if (mob4_life <= 0) {
             if (mob4live == true) {
-                score += mob4_lv;
+                score += Math.floor(mob4_lv**2 + (myCanvas.height - mob4_y) / 100);
                 missileImg.src = "./images/missiledie.png";
             }
             mob4live = false;
@@ -118,10 +162,10 @@ function Do_a_Frame() {
         }
     }
     if (ImagesTouching (missile_x, missile_y, missileImg, mob5_x, mob5_y, mob5Img)) {
-        mob5_life -= 1;
+        mob5_life -= missilelv;
         if (mob5_life <= 0) {
             if (mob5live == true) {
-                score += mob5_lv;
+                score += Math.floor(mob5_lv**2 + (myCanvas.height - mob5_y) / 100);
                 missileImg.src = "./images/missiledie.png";
             }
             mob5live = false;
@@ -154,6 +198,9 @@ function Do_a_Frame() {
             characterDie();
         }        
     }
+    if (ImagesTouching (character_x, character_y, characterImg, danger_x, danger_y, dangerImg)) {
+        characterDie();       
+    }
 
     ctx.drawImage(characterImg, character_x, character_y);
 
@@ -161,11 +208,28 @@ function Do_a_Frame() {
         ctx.fillSytle = "black";
         ctx.font = "20px Arial";
         ctx.fillText("Score: " + score, 0, 20);
+        ctx.textAlign = "left";
     } else {
         ctx.fillSytle = "black";
         ctx.font = "20px Arial";
         ctx.fillText("Your Score: " + score, myCanvas.width / 2, myCanvas.height / 2);
+        ctx.fillText("Press R to play again", myCanvas.width / 2, myCanvas.height / 2 + 30);
+        ctx.textAlign = "center";
     }
+
+    dangerMove();
+    if (danger_y > myCanvas.height) {
+        danger_x = Math.floor(Math.random() * ((myCanvas.width - 1) - (dangerImg.width + 1) + 1)) + (dangerImg.width);
+        danger_y = Math.floor(Math.random() * ((-6000) - (-5000) + 1)) + (-5000);
+    }
+    ctx.drawImage(dangerImg, danger_x, danger_y);
+}
+
+function MyKeyDownHandler (MyEvent) {
+    if (characterlive == false && MyEvent.keyCode == 82) {
+        restart_game();
+    }
+    MyEvent.preventDefault();
 }
 
 function mouseMoveHandler (e) {
@@ -288,14 +352,20 @@ function mobDie (mob_number) {
 
 function missileMove () {
     missile_y -= missilespeed;
+    missileLv();
+    missileImg.src = "./images/missilelv"+missilelv+".png";
 }
 
 function reMissile() {
     if (missile_y < - (myCanvas.height - character_y)) {
-        missileImg.src = "./images/missilelv1.png";
+        missileImg.src = "./images/missilelv"+missilelv+".png";
         missile_x = character_x + characterImg.width / 2 - missileImg.width / 2;
         missile_y = character_y - missileImg.height;
     }
+}
+
+function dangerMove () {
+    danger_y += mobspeed * 1.5;
 }
 
 function ImagesTouching (x1, y1, img1, x2, y2, img2) {
@@ -317,10 +387,11 @@ function characterDie () {
     mob4_y = - mob4Img.height * 2;
     mob5_y = - mob5Img.height * 2;
     mobspeed = 0;
+    danger_y = - dangerImg.height * 2;
 }
 
 function mobLv() {
-    moblv = Math.floor(score / 50) + 1;
+    moblv = Math.floor(score / 100) + 1;
     if (moblv >= 10) {
         moblv = 10;
     }
@@ -338,12 +409,13 @@ function set_mobLv() {
 }
 
 function missileLv() {
-    missilelv = Math.floor(score / 100) + 1;
+    missilelv = Math.floor(score / 200) + 1;
     if (missilelv >= 5) {
         missilelv = 5;
     }
 }
 
+addEventListener("keydown", MyKeyDownHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
-setInterval (Do_a_Frame, 25);
+setInterval (Do_a_Frame, 20);
