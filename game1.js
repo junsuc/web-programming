@@ -1,5 +1,7 @@
 var ctx = myCanvas.getContext("2d");
 
+var for_start = true;
+
 var character_x = 0; var character_y = 0;
 var characterImg = new Image();
 characterImg.src = "./images/character.png";
@@ -24,19 +26,30 @@ var mob1live = true; var mob2live = true; var mob3live = true; var mob4live = tr
 var moblv = 1;
 var mob1_lv = 1; var mob2_lv = 1; var mob3_lv = 1; var mob4_lv = 1; var mob5_lv = 1;
 var mob1_life = mob1_lv; var mob2_life = mob2_lv; var mob3_life = mob3_lv; var mob4_life = mob4_lv; var mob5_life = mob5_lv;
-var mobspeed = 8;
+var mobspeed = 6;
 
 var missile_x = 0; var missile_y = 0;
 var missileImg = new Image();
 missileImg.src = "./images/missilelv1.png";
 var missilelv = 1;
-var missilespeed = 70;
+var missilespeed = 35;
 
 var danger_x = 0; var danger_y = 0;
 var dangerImg = new Image();
 dangerImg.src = "./images/danger.png";
 
 var score = 0;
+
+function start_screen() {
+    ctx.fillSytle = "black";
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Shooting Game", myCanvas.width / 2, 100);
+    ctx.font = "20px Arial";
+    ctx.fillText("마우스로 비행기를 움직여", myCanvas.width / 2, 200);
+    ctx.fillText("불을 피하면서 블럭을 파괴하세요!", myCanvas.width / 2, 250);
+    ctx.fillText("Press S to play again", myCanvas.width / 2, 500);
+}
 
 function restart_game() {
     characterlive = true;
@@ -60,13 +73,13 @@ function restart_game() {
     moblv = 1;
     mob1_lv = 1; mob2_lv = 1; mob3_lv = 1; mob4_lv = 1; mob5_lv = 1;
     mob1_life = mob1_lv; mob2_life = mob2_lv; mob3_life = mob3_lv; mob4_life = mob4_lv; mob5_life = mob5_lv;
-    mobspeed = 8;
+    mobspeed = 6;
 
     missile_x = 0; missile_y = 0;
     missileImg = new Image();
     missileImg.src = "./images/missilelv1.png";
     missilelv = 1;
-    missilespeed = 70;
+    missilespeed = 35;
 
     danger_x = Math.floor(Math.random() * ((myCanvas.width - 1) - (dangerImg.width + 1) + 1)) + (dangerImg.width);
     danger_y = Math.floor(Math.random() * ((-6000) - (-5000) + 1)) + (-5000);
@@ -122,7 +135,6 @@ function Do_a_Frame() {
         if (mob1_life <= 0) {
             if (mob1live == true) {
                 score += Math.floor(mob1_lv**2 + (myCanvas.height - mob1_y) / 100);
-                missileImg.src = "./images/missiledie.png";
             }
             mob1live = false;
             mobDie(1);
@@ -133,7 +145,6 @@ function Do_a_Frame() {
         if (mob2_life <= 0) {
             if (mob2live == true) {
                 score += Math.floor(mob2_lv**2 + (myCanvas.height - mob2_y) / 100);
-                missileImg.src = "./images/missiledie.png";
             }
             mob2live = false;
             mobDie(2);
@@ -144,7 +155,6 @@ function Do_a_Frame() {
         if (mob3_life <= 0) {
             if (mob3live == true) {
                 score += Math.floor(mob3_lv**2 + (myCanvas.height - mob3_y) / 100);
-                missileImg.src = "./images/missiledie.png";
             }
             mob3live = false;
             mobDie(3);
@@ -155,7 +165,6 @@ function Do_a_Frame() {
         if (mob4_life <= 0) {
             if (mob4live == true) {
                 score += Math.floor(mob4_lv**2 + (myCanvas.height - mob4_y) / 100);
-                missileImg.src = "./images/missiledie.png";
             }
             mob4live = false;
             mobDie(4);
@@ -166,7 +175,6 @@ function Do_a_Frame() {
         if (mob5_life <= 0) {
             if (mob5live == true) {
                 score += Math.floor(mob5_lv**2 + (myCanvas.height - mob5_y) / 100);
-                missileImg.src = "./images/missiledie.png";
             }
             mob5live = false;
             mobDie(5);
@@ -226,6 +234,10 @@ function Do_a_Frame() {
 }
 
 function MyKeyDownHandler (MyEvent) {
+    if (for_start == true && MyEvent.keyCode == 83) {
+        for_start = false;
+        setInterval (Do_a_Frame, 10);
+    }
     if (characterlive == false && MyEvent.keyCode == 82) {
         restart_game();
     }
@@ -273,7 +285,7 @@ function mob_First_y_pos (mob_number) {
 function mobMove (mob_number) {
     switch (mob_number) {
         case 1: 
-            mob1_x = 10;
+            mob1_x = 5;
             mob1_y += mobspeed;
             if (mob1_y > myCanvas.height) {
                 mob1_lv = set_mobLv();
@@ -284,7 +296,7 @@ function mobMove (mob_number) {
             }
             break;
         case 2: 
-            mob2_x = 90;
+            mob2_x = 85;
             mob2_y += mobspeed;
             if (mob2_y > myCanvas.height) {
                 mob2_lv = set_mobLv();
@@ -295,7 +307,7 @@ function mobMove (mob_number) {
             }
             break;
         case 3: 
-            mob3_x = 170;
+            mob3_x = 165;
             mob3_y += mobspeed;
             if (mob3_y > myCanvas.height) {
                 mob3_lv = set_mobLv();
@@ -306,7 +318,7 @@ function mobMove (mob_number) {
             }
             break;
         case 4:
-            mob4_x = 250;
+            mob4_x = 245;
             mob4_y += mobspeed;
             if (mob4_y > myCanvas.height) {
                 mob4_lv = set_mobLv();
@@ -317,7 +329,7 @@ function mobMove (mob_number) {
             }
             break;
         case 5:
-            mob5_x = 330;
+            mob5_x = 325;
             mob5_y += mobspeed;
             if (mob5_y > myCanvas.height) {
                 mob5_lv = set_mobLv();
@@ -415,7 +427,8 @@ function missileLv() {
     }
 }
 
+start_screen();
+
 addEventListener("keydown", MyKeyDownHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
-setInterval (Do_a_Frame, 20);
