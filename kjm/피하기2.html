@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>불피하기</title>
+</head>
+<body>
+    <canvas id = myCanvas width=400 height=600 style="background: white;" style="border:1px"></canvas>
+    <script>
+        var ctx = myCanvas.getContext("2d");
+
+        var start = true;
+
+        function Character(path, len, double = false) {
+            this.images = [];
+            for (var i = 0; i < len; i++) {
+                this.images[i] = new Image();
+                this.images[i].src = path + i + '.png';
+            }
+            if (double) {
+                path = path.slice(0, -1) + 'r';
+                for (var i = 0; i < len; i++) {
+                    this.images[i + len] = new Image();
+                    this.images[i + len].src = path + i + '.png';
+                }
+            }
+            this.index = 0;
+            this.len = len;
+            this.double = double;
+            this.leftDirect = true;
+        }
+        Character.prototype.next = function () {
+            this.index++;
+            this.index %= this.len;
+            if (this.double && !this.leftDirect) {
+                this.index += this.len;
+            }
+        }
+        Character.prototype.image = function () {
+            this.width = this.images[0].width;
+            this.height = this.images[0].height;
+            return this.images[this.index];
+        }
+        Character.prototype.flip = function (direction) {
+            if (this.double) {
+                this.leftDirect = (direction == 'l');
+            }
+        }
+
+        var fire_x = 0;
+        var fire_y = 0;
+        var buImg = new Character("./image/l", 10, true);
+        var count = 0;
+        var fire_count = 0;
+        var backImg = new Image();
+        backImg.src = "./image/배경.png";
+        var bu_x = 0;
+        var bu_y = 0;
+        var fireImg = new Character("./image/f", 4);
+        var life = 6;
+        var time_remaining = 0;
+        var score = 100;
+
+        function ImageesTouching(x1, y1, img1, x2, y2, img2){
+            if(x1 >= x2 + img2.width || x1 + img1.width <= x2)
+            return false;
+            if(y1 >= y2 + img2.height || y1 + img1.height <= y2)
+            return false;
+
+            return true;
+        }
+        var fire_speed = 30;
+        var FPS = 40;
+    
+        function restart_game() {
+            life = 5;
+            time_remaining = 0;
+            fire_speed = 30;
+            bu_x = 0;
+        }
+
+        function start_game(){
+                ctx.fillStyle = "black";
+                ctx.font = "bold 50px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("불피하기", myCanvas.width / 2, myCanvas.height / 2);
+                ctx.font = "bold 20px Arial";
+                ctx.fillText("시작하기 : q", myCanvas.width / 2, (myCanvas.height / 2) + 30);
+                ctx.textAlign = "left"
+             }
+    
+        function Do_a_Frame(){
+            buImg.next();
+            fireImg.next();
+
+            bu_y = myCanvas.height - buImg.height;
+            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+            ctx.drawImage(backImg, 0, 0, myCanvas.width, myCanvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.fillText("좌로 이동 : ←", 254, 20);
+            ctx.fillText("우로 이동 : →" , 254, 45);
+            
+            ctx.drawImage(buImg.image(), bu_x, bu_y);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.fillText("생명 : " + life, 0, 20);
+            ctx.fillText("시간 : " + Math.round(time_remaining) + "초", 0, 45);
+            ctx.fillText("점수 : " + Math.round(time_remaining)*score + "점", 0, 70);
+
+            if(life <= 0){
+                ctx.fillStyle = "red";
+                ctx.font = "bold 50px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("Game Over", myCanvas.width / 2, myCanvas.height / 2);
+                ctx.font = "bold 20px Arial";
+                ctx.fillText("다시하기 : s", myCanvas.width / 2, (myCanvas.height / 2) + 30);
+                ctx.textAlign = "left"
+            }
+            else {
+                time_remaining = time_remaining + 1/10;
+                fire_y = fire_y + fire_speed
+                if(fire_y >myCanvas.height){
+                    fire_y = 0;
+                    fire_x = Math.random() * (myCanvas.width - fireImg.width);
+                }
+            }
+
+            ctx.drawImage(fireImg.image(), fire_x, fire_y);
+            if(ImageesTouching(bu_x, bu_y, buImg, fire_x, fire_y, fireImg)){
+                life = life - 1;
+                fire_speed = fire_speed + 0.5;
+                fire_x = -fireImg.width;
+            }
+        }
+
+        function MyKeyDownHandler(MyEvent){
+            if(MyEvent.keyCode == 37 && bu_x > 0){
+                bu_x = bu_x - 10;
+                buImg.flip('l');
+            }
+
+            if(MyEvent.keyCode == 39 && bu_x + buImg.width < myCanvas.width){
+                bu_x = bu_x + 10;
+                buImg.flip('r');
+            }
+            if(life <= 0 && MyEvent.keyCode == 83){
+                restart_game();
+            }
+            if (start == true && MyEvent.keyCode == 81) {
+                start = false;
+            setInterval (Do_a_Frame, 100);
+            }
+        }
+        start_game();
+        addEventListener("keydown", MyKeyDownHandler);
+        </script>
+</body>
+</html>

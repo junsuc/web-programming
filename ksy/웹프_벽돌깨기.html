@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>벽돌깨기</title>
+    <style>
+        canvas {
+            background: linear-gradient(180deg, #6867AC, #FFBCD1) fixed;
+            display: block;
+        }
+        .button {
+            width: 90px;
+            height: 25px;
+            border-radius: 8px;
+            border-color: #6867AC;
+            background: #6867AC;
+            color: rgb(234, 234, 234);
+            font-family: Sam3KRFont;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        @font-face {
+            font-family: 'Sam3KRFont';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/Sam3KRFont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="400" height="600"></canvas>
+    <div>
+        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
+        <button class="button" onclick="start()">START</button>
+    </div>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        var x = canvas.width / 2;
+        var y = canvas.height - 20;
+
+        var dx = 3;
+        var dy = -3;
+        var ballRadius = 10;
+
+        var BarHeight = 15;
+        var BarWidth = 90;
+        var BarX = (canvas.width - BarWidth) / 2;
+        
+        var leftPressed = false;
+        var rightPressed = false;
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler);
+
+        var brickColumn = 5;
+        var brickRow = 4; 
+        var brickWidth = 66;
+        var brickHeight = 15;
+        var brickPadding = 10; 
+        var brickOffsetTop = 40;
+        var brickOffsetLeft = 15;
+        var bricks = [];
+        for (var i = 0; i < brickColumn; i++) {
+            bricks[i] = [];
+            for (var k = 0; k < brickRow; k++) { 
+                bricks[i][k] = { x: 0, y: 0, status: 1 };
+            }
+        }
+
+        var score = 0;
+        var live = 3;
+        
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#CE7BB0"
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawBar() {
+            ctx.beginPath();
+            ctx.rect(BarX, canvas.height - BarHeight, BarWidth, BarHeight);
+            ctx.fillStyle = "#CE7BB0";
+            ctx.fill();
+            ctx.closePath();
+        }
+        
+        function keyDownHandler(e) {
+            if (e.keyCode == 37) {
+                leftPressed = true;
+            }
+            else if (e.keyCode == 39) {
+                rightPressed = true;
+            }
+        }
+        function keyUpHandler(e) {
+            if (e.keyCode == 37) {
+                leftPressed = false;
+            }
+            else if (e.keyCode == 39) {
+                rightPressed = false;
+            }
+        }
+
+        function collision() {
+            for (var i = 0; i < brickColumn; i++) {
+                for (var k = 0; k < brickRow; k++) {
+                    var b = bricks[i][k];
+                    if (b.status == 1) { 
+                        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                            dy = -dy;
+                            b.status = 0;
+                            score++;
+                            if (score == brickColumn * brickRow) {
+                                alert("CLEAR!");
+                                document.location.reload();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawBricks() {
+            for (var i = 0; i < brickColumn; i++) {
+                for (var k = 0; k < brickRow; k++) {
+                    if (bricks[i][k].status == 1) {
+                        var brickX = (i * (brickWidth + brickPadding)) + brickOffsetLeft;
+                        var brickY = (k * (brickHeight + brickPadding)) + brickOffsetTop;
+                        bricks[i][k].x = brickX;
+                        bricks[i][k].y = brickY;
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = "#FFF2F2";
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        function Score() {
+            ctx.font = "20px 굴림";
+            ctx.fillStyle = "#FFF2F2";
+            ctx.fillText("Score : " + score, 10, 25);
+        }
+
+        function Live() {
+            ctx.font = "18px 굴림";
+            ctx.fillStyle = "#FFF2F2";
+            ctx.fillText("기회 : " + live, canvas.width-80, 25);
+        }
+
+        function Background() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall(); 
+            drawBricks();
+            drawBar();
+            collision();
+            Score();
+            Live();
+        }
+    
+        function Do_a_Frame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            drawBall();
+            drawBricks();
+            drawBar();
+            collision();
+            Score();
+            Live();
+
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) { dx = -dx; }
+            if (y + dy < ballRadius) { dy = -dy; }
+            else if (y + dy > canvas.height - ballRadius) {
+                if (x > BarX && x < BarX + BarWidth) { 
+                    dy = -dy;
+                } else {
+                    live--; 
+                    if (live == 0) {
+                        alert("GAME OVER");
+                        document.location.reload();
+                    } else { 
+                        x = canvas.width / 2;
+                        y = canvas.height - 30;
+                        dx = 2;
+                        dy = -2;
+                        BarX = (canvas.width - BarWidth) / 2;
+                    }
+                }
+            }
+
+            
+            if (rightPressed && BarX <= canvas.width - BarWidth) { BarX += 5; }
+            else if (leftPressed && BarX > 0) { BarX -= 5; }
+
+            x += dx; 
+            y += dy;
+            requestAnimationFrame(Do_a_Frame);
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawBricks();
+        drawBar();
+        collision();
+        Score();
+        Live();
+
+        function start() {
+            Do_a_Frame();
+        }
+        
+    </script>
+</body>
+
+</html>

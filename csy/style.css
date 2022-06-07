@@ -1,0 +1,58 @@
+
+body{
+    min-width: 400px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    _background-color: palevioletred;
+}
+canvas {
+    /* display: block; */
+    margin: auto;
+    /* margin-top: 10px; */
+    /* border: 10px solid palevioletred; */
+    _border-left: 20px solid palevioletred;
+    background-color: #572C41;
+    float: left;
+}
+
+#playbutton {
+    position: absolute;
+    left: 150px;
+    top: 48%;
+    width: 120px;
+    height: 40px;
+    display: block;
+    margin: auto;
+    font-family: "arial", Arial, sans-serif;
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: palevioletred;
+    cursor: pointer;
+    border: 3px solid palevioletred;
+}
+
+div.help{
+    position: absolute;
+    width: 400px;
+    height: 25px;
+    background-color: palevioletred;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    align-items: center;
+}
+.help_text{
+    background-color: #572C41;
+    padding: 0 20px;
+    font-size: 19px !important;
+}
+.help p{
+    color: white;
+    font-size: 13px;
+}
+.help p:nth-child(3), p:nth-child(5){
+color: #572C41;
+font-weight: bold;
+}

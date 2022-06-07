@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+        @font-face {
+    font-family: 'Sam3KRFont';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/Sam3KRFont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+        div.wrap{
+            width: 400px;
+            height: 600px;
+            background-color: black;
+        }
+
+        div.shape{
+            width: 350px;
+            height: 550px;
+            border: 2px solid white;
+            border-radius: 5px;
+            position: absolute;
+            top: 26px;
+            left: 30px;
+            /* background-image: url(./img/bu.png);
+            background-repeat: no-repeat; background-size: 70px; background-position:265px 460px; */
+        }
+        img.bu{
+            position: absolute;
+            width: 70px;
+            top: 205px;
+            left: 170px;
+            animation: fly_bu 5s linear infinite alternate running;
+        }
+        @keyframes fly_bu{
+            50%{transform: translate(15px, 20px) rotate(-10deg);}
+        }
+
+        div.shape>P{
+            font-size: 20px;
+            text-align: center;
+            color: white;
+            padding-top: 40px;
+        }
+
+        h1{
+            font-size: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 135px;
+        }
+        div.list>ul{
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        div.list>ul li{
+            justify-content: center;
+            padding: 13px 0;
+            font-size: 25px;
+        }
+        div.list>ul li a{
+            color: wheat;
+            text-decoration: none;
+        }
+        div.list>ul li a:hover{
+           color: aqua;
+           font-size: 30px;
+        }
+    </style>
+</head>
+<body style="font-family: Sam3KRFont;">
+    <div class="wrap">
+        <img src="./img/Frame 1.png" alt="">
+        <img class="bu" src="./img/bu.png" alt="">
+
+        <div class="shape">
+            <p>&lt; RETRO &gt;</p>
+            <h1>오락실</h1>
+            <div class="list">
+                <ul>
+                    <li><a href="./csy/tetris9.html">TETRIS-GAME</a></li>
+                    <li><a href="./cjs/index.html">SHOOTING-BLOCKS</a></li>
+                    <li><a href="./kjm/피하기2.html">AVOID-GAME</a></li>
+                    <li><a href="./ksy/웹프_벽돌깨기.html">BRICK-BREAKER</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
